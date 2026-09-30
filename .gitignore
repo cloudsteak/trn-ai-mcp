@@ -76,5 +76,3 @@ out/
 .DS_Store
 Thumbs.db
 
-# Project-specific local artifacts
-*.log
