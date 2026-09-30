@@ -4,68 +4,57 @@ Ez egy alap MCP szerver. A hivatalos leírás: [MCP 2026-07-28](https://modelcon
 
 MCP verzió: `2026-07-28`.
 
+A projektben az MCPServer-t (a FastMCP hivatalos, 2.x.x verziós utódját) használjuk.
+Ennek előnye, hogy a protokoll-kódok és JSON sémák manuális definíciója helyett Python dekorátorokkal (annotation) hozhatjuk létre az AI eszközöket. Emellett a keretrendszer a háttérben automatikusan kezeli a beépített hibakeresést, valamint az állapotmentes (stateless) kommunikációs protokoll szabályait.
+Ezzel sokkal gyorsabban és rövidebben tudjuk ugyanazt a funkcionalitást megvalósítani.
+
 ## Mappastruktúra
 
-````plaintext
+```plaintext
 elso-mcp-szerverem/
-├── pyproject.toml
 ├── README.md
+├── pyproject.toml
 ├── src
 │   └── elso_mcp_szerverem
-│       └── __init__.py
+│       ├── __init__.py
+│       └── server.py
 └── uv.lock
-
-
-
-## Alap parancsok a teljesen új projekthez (itt nem releváns)
-
-Ez a projekt már egy előkészített MCP szervert mutat be, így neked nem kell a kezdeti beállításokkal foglalkoznod. Ennek ellenére ideteszem azokat az alap parancsokat, amelyeket én futtattam a projekt előkészítéséhez. Én Mac-en csináltam a projektet, de hasonlóan működik Linux-on és Windows-on is.
-
-1. UV telepítése (ha még nincs telepítve):
-
-   ### Mac és Linux esetén (nem pip-ből)
-
-   ```bash
-   curl -sSL https://install.uv.io | sh
-````
-
-### Windows esetén (nem pip-ből)
-
-```powershell
-Invoke-WebRequest -Uri https://install.uv.io -OutFile install.ps1
-.\install.ps1
 ```
 
-2. Projekt inicializálása és mappa létrehozása a projekt számára:
+## Megjegyzés
+
+Ellenőrizd az előfeltételeket és telepítsd azokat, ha szükséges. Ezeket megtalálod a [fő README.md fájlban](../README.md).
+
+## 1. lépés: Alap MCP szerver
+
+Viszonylag könnyű dolgunk lesz, mert néhány kódsor megírásáva máris lesz egy MCP szerverünk. Lássuk a lépéseket:
+
+1. Virtuális környezet létrehozása és a függőségek telepítése:
+
+```bash
+uv sync
+```
+
+2. Az `src/elso_mcp_szerverem` mappában hozzunk létre egy **server.py** fájlt a következő tartalommal:
+
+```python
+# Szükséges Python csomagok importálása
+from mcp.server.mcpserver import MCPServer
+
+# MCP szerver példány létrehozása
+mcp = MCPServer("Első MCP Szerverem")
+
+# A fő program indítása - entry point
+if __name__ == "__main__":
+    print(f"{mcp.name} indul...")
+    # A szerver futtatása a helyi gépen a 8000-es porton
+    mcp.run(host="0.0.0.0", port=8000)
+```
+
+3. Szerver indítása:
+
    ```bash
-   uv init elso-mcp-szerverem
-   cd elso-mcp-szerverem
-   ```
-3. Virtuális környezet létrehozása és aktiválása:
-
-   ### Mac és Linux esetén
-
-   ```bash
-   uv venv .venv
-   source .venv/bin/activate
+   uv run python src/elso_mcp_szerverem/server.py
    ```
 
-   _Megjegyzés: Deaktiválás a `deactivate` parancs futtatásával lehetséges._
-
-   ### Windows esetén
-
-   ```powershell
-   uv venv .venv
-   .\.venv\Scripts\activate
-   ```
-
-_Megjegyzés: Deaktiválás a `deactivate` parancs futtatásával lehetséges._
-
-4. MCP csomag hozzáadása a projekthez
-
-   ```bash
-   uv add "mcp[cli]"
-   ```
-
-Ezzel készen is állunk a projekt fejlesztésére.
-
+Ezzel készen is van az első MCP szerverünk. Habár nem képes még semmire, már fut és elérhető a megadott porton.
