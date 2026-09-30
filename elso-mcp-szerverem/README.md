@@ -58,3 +58,27 @@ if __name__ == "__main__":
    ```
 
 Ezzel készen is van az első MCP szerverünk. Habár nem képes még semmire, már fut és elérhető a megadott porton.
+
+## 2. lépés: Képességek hozzáadása
+
+Ebben a lépésben felruházzuk a szerverünket különböző képességekkel, azaz létrehozunk új eszközöket (tools), új erőforrásokat (resources), és promptokat (prompts).
+
+1. Állítsuk le az előzőleg indított MCP szervert, ha még fut. Ehhez használhatjuk a terminálban a `Ctrl+C` kombinációt.
+
+2. Nyissuk meg az `src/elso_mcp_szerverem/server.py` fájlt, és adjuk hozzá az első eszközt (tool) a következő módon:
+
+```python
+# Első eszköz (tool) létrehozása
+@mcp.tool(name="Osszeadas", description="Két szám összeadására szolgáló eszköz")
+def osszeadas(a: int, b: int) -> int:
+    """A két számot összeadja és a végeredményt adja vissza."""
+    return a + b
+```
+
+Ez az eszköz az alábbit csinálja: két számot ad össze, és visszaadja az eredményt. Amint láthatjuk, ez alapvetően egy egyszerű python függvény, amelyet az MCP szerver eszközeként regisztráltunk. Ami viszont az MCP rendszer számára használhatóvá teszi azt a dekorátor (`@mcp.tool`) és a megfelelő metainformációk (név és leírás) biztosítása.
+
+3. Mentse el a fájlt, és indítsa újra az MCP szervert a következő parancs segítségével:
+
+   ```bash
+   uv run python src/elso_mcp_szerverem/server.py
+   ```
