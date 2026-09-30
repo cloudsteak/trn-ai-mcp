@@ -154,4 +154,4 @@ def incidens_jelentes() -> str:
 
 4. Állítsa le az MCP szervert a `Ctrl+C` kombinációval a terminálban.
 
-Következő lépésben az MCP Inspecotr-t, ami egy vizuákis tesztelő- és hibakereső alkalmazás, ismerjük meg. Majd integráljuk az MCP szerverünket Claude Desktop alkalmazással.
+Következő lépésben az MCP Inspector-t, ami egy vizuákis tesztelő- és hibakereső alkalmazás, ismerjük meg. Majd integráljuk az MCP szerverünket Claude Desktop alkalmazással.
