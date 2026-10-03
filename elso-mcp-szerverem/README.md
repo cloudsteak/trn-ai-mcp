@@ -155,3 +155,80 @@ def incidens_jelentes() -> str:
 4. Állítsa le az MCP szervert a `Ctrl+C` kombinációval a terminálban.
 
 Következő lépésben az MCP Inspector-t, ami egy vizuákis tesztelő- és hibakereső alkalmazás, ismerjük meg. Majd integráljuk az MCP szerverünket Claude Desktop alkalmazással.
+
+## 3. Integráció Claude Desktop alkalmazással és az MCP Inspector használata
+
+### MCP Inspector használata
+
+Az MCP inspector egy vizuális tesztelő- és hibakereső alkalmazás, amely lehetővé teszi az MCP szerverünkön elérhető eszközök, erőforrások és promptok interaktív tesztelését. Segítségével könnyen ellenőrizhetjük, hogy az egyes komponensek megfelelően működnek-e, és gyorsan azonosíthatjuk az esetleges hibákat.
+
+Mivel ez része az MCP SDK-nak, az MCP Inspector automatikusan elérhető lesz, amint telepítjük az SDK-t. Ez lehetővé teszi, hogy az MCP szerverünkön elérhető eszközöket, erőforrásokat és promptokat könnyedén teszteljük és hibakeressük egy vizuális felületen keresztül.
+
+#### MCP Inspector indítása
+
+Az alábbi módon indíthatjuk el:
+
+1. Indítsa el az MCP szervert fejlesztői módban a következő parancs segítségével:
+```bash
+uv run mcp dev src/elso_mcp_szerverem/server.py
+```
+
+
+2. a virtuális python környezet és a python fájl teljes elérési útjával. Fontos, hogy ilyenkor aktiválni kell a python virtulási környezetét,  majd a következő parancsot kell használni: `npx @modelcontextprotocol/inspector <python virtuális környezet teljes elérési útja .../.venv/bin/python> <a mcp szerver python fájl teljes elérési útja .../src/elso_mcp_szerverem/server.py>`.
+
+```bash
+npx @modelcontextprotocol/inspector /Users/tibor.kiss/dev/local/trn-ai-mcp/elso-mcp-szerverem/.venv/bin/python /Users/tibor.kiss/dev/local/trn-ai-mcp/elso-mcp-szerverem/src/elso_mcp_szerverem/server.py
+```
+
+_Megjegyzés: Győződj meg róla, hogy a virtuális környezet aktiválva van, mielőtt elindítod az MCP Inspectort. És a fenti elérési útakat a saját rendszerednek megfelelően módosítsd._
+
+#### MCP Inspector használata
+
+Miután elindítjuk, megnyílik a böngészőben az MCP Inspector felülete, ahol interaktívan tesztelhetjük és hibakereshetjük az MCP szerverünkön elérhető eszközöket, erőforrásokat és promptokat.
+
+1. Először csatlakozzunk az MCP szerverünkhöz az Inspector felületén keresztül. Ezt a Disconnected állapotú csatlakozás gomb megnyomásával tehetjük meg.
+
+![alt mcp-inspector-disconnected](../assets/mcp-inspector-disconnected.png)
+
+2. Ha sikeresen csatlakoztunk az MCP szerverünkhöz, a státusz jelző zöldre vált, és az Inspector felületén elérhetők lesznek az MCP szerverünkön található eszközök, erőforrások és promptok.
+
+![alt mcp-inspector-connected](../assets/mcp-inspector-connected.png)
+
+#### Eszköz tesztelése
+
+1. Győződj meg róla, hogy az MCP szerverhez csatlakoztál az Inspector felületén.
+2. Az oldal tetején kattints a **Tools** fülre. Itt találhatók az MCP szerverünkön elérhető eszközök, amelyeket tesztelhetünk. Ha nem látoda eszközöket, akkor kattintsd át a **Paginated** kapcsolót.
+
+![alt mcp-inspector-tools-empty](../assets/mcp-inspector-tools-empty.png)
+
+3. Ekkor megjelenik az MCP szerverünkön elérhető eszközök listája és kezdődhet is a tesztelés.
+
+![alt mcp-inspector-tools-list](../assets/mcp-inspector-tools-list.png)
+
+4. Az **Összeadás** eszköz tesztelése egyszerű: kattints az eszközre, add meg a szükséges bemeneti értékeket, majd indítsd el a tesztet.
+
+![alt mcp-inspector-tool-addition-1](../assets/mcp-inspector-tool-addition-1.png)
+
+5.  Az eredmény megjelenik az Inspector felületén.
+
+![alt mcp-inspector-tool-addition-2](../assets/mcp-inspector-tool-addition-2.png)
+
+#### Erőforrás tesztelése
+
+1. Győződj meg róla, hogy az MCP szerverhez csatlakoztál az Inspector felületén.
+
+2. Az oldal tetején kattints a **Resources** fülre. Itt találhatók az MCP szerverünkön elérhető erőforrások, amelyeket tesztelhetünk. 
+
+3. Válaszd ki a tesztelni kívánt erőforrást és kattints rá a részletek megtekintéséhez és a tesztelés elindításához. Mi most a **Webshop logfájl beolvasása (erőforrás)** erőforrást fogjuk tesztelni.
+
+![alt mcp-inspector-resource-webshop-log](../assets/mcp-inspector-resource-webshop-log.png)
+
+#### Prompt tesztelése
+
+1. Győződj meg róla, hogy az MCP szerverhez csatlakoztál az Inspector felületén.
+2. Az oldal tetején kattints a **Prompts** fülre. Itt találhatók az MCP szerverünkön elérhető promptok, amelyeket tesztelhetünk. 
+3. Válaszd ki a tesztelni kívánt promptot és kattints rá a részletek megtekintéséhez és a tesztelés elindításához. Mi most a **Incidens jelentés (prompt)** promptot fogjuk megtekinteni.
+4. Miután rákattintottunk a nevére, láthatjuk a teljes prompt-ot.
+
+![alt mcp-inspector-prompt-incident-report](../assets/mcp-inspector-prompt-incident-report.png)
+
