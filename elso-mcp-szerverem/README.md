@@ -35,6 +35,9 @@ Ezzel sokkal gyorsabban és rövidebben tudjuk ugyanazt a funkcionalitást megva
      - [Hibakezelés](#hibakezelés)
      - [Gmail kapcsolat hozzáadása és aktiválása Claude Desktop alkalmazáshoz](#gmail-kapcsolat-hozzáadása-és-aktiválása-claude-desktop-alkalmazáshoz)
      - [MCP szerver tesztelése Claude Desktop alkalmazásban](#mcp-szerver-tesztelése-claude-desktop-alkalmazásban)
+7. [4. Integráció egyéb alkalmazásokkal](#4-integráció-egyéb-alkalmazásokkal)
+   - [ChatGPT Codex](#chatgpt-codex)
+   - [Cursor](#cursor)
 
 ## Mappastruktúra
 
@@ -470,7 +473,7 @@ Természetesen a fenti parancsokat a saját rendszeredhez és a telepítési út
 codex
 ```
 
-10. A codex parancssorban írd be a következő promptot az MCP szerver teszteléséhez:
+10. Írd be a következő promptot az MCP szerver teszteléséhez:
 
 ```bash
 Használd az Osszeadas eszközt: mennyi 1234567 + 7654321?
@@ -480,5 +483,75 @@ _Megjegyzés: Ha jóváhagyást kér az MCP eszköz használatához, akkor add m
 
 11. Látszik, hogy meghívta a **Összeadás** eszközt, és a helyes eredményt adta vissza.
 
-![alt osszeadas_result](../assets/osszeadas_result.png)
+![alt osszeadas_result_codex](../assets/osszeadas_result_codex.png)
 
+### Cursor
+
+A Cursor ugyanazt a JSON-formátumot használja, mint a Claude Desktop, így a configodat szinte változtatás nélkül átveheted.
+
+Lépsek a következők:
+
+1. Nyisd meg a terminált a számítógépeden.
+2. Ellenőrizd, hogy a Cursor telepítve van-e a számítógépeden a következő paranccsal:
+
+```bash
+cursor --version
+```
+
+3. Hozd létre vagy szerkeszd a mcp.json fájlt
+
+Két helyre teheted:
+
+- globálisan, minden projekthez: ~/.cursor/mcp.json
+- csak egy projekthez: <projekt>/.cursor/mcp.json
+
+Mi a globális konfigurációt választjuk.
+
+```bash
+mkdir -p ~/.cursor
+nano ~/.cursor/mcp.json
+```
+
+4. Írjunk bele először egy üres nyitó-záró JSON objektumot:
+
+```json
+{}
+```
+
+5. Most a Claude Desktop konfigurációból másoljuk ki az `"mcpServers": {...}` részt (a vessző már nem kell), és illesszük be a `~/.cursor/mcp.json` fájlba a már létrehozott üres JSON objektumba. A végeredmény valahogy így fog kinézni:
+
+```json
+{
+  "mcpServers": {
+    "Első MCP Szerverem": {
+      "command": "/opt/homebrew/bin/uv",
+      "args": [
+        "--directory",
+        "/Users/tibor.kiss/dev/local/trn-ai-mcp/elso-mcp-szerverem",
+        "run",
+        "mcp",
+        "run",
+        "src/elso_mcp_szerverem/server.py"
+      ]
+    }
+  }
+}
+```
+
+6. Mentsük el a fájlt (CTRL + O, majd CTRL + X).
+7. Tesztelt agent módban.
+
+```bash
+cursor
+```
+
+8. Ez elindítja a Cursor alkalmazást.
+9. Nyiss egy Chat-et, és oda írd be a következő promptot az MCP szerver teszteléséhez:
+
+```bash
+Használd az Osszeadas eszközt: mennyi 1234567 + 7654321?
+```
+
+10. Látszik, hogy meghívta a **Összeadás** eszközt, és a helyes eredményt adta vissza.
+
+![alt osszeadas_result_cursor](../assets/osszeadas_result_cursor.png)
