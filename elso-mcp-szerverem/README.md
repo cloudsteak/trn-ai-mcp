@@ -402,30 +402,83 @@ Az MCP szerverünk komplexebb teszteléséhez telepítjük, majd aktiváljuk a G
 
 Ezzel sikeresen hozzáadtad és aktiváltad a Gmail kapcsolatot a Claude Desktop alkalmazásban.
 
-
 ### MCP szerver tesztelése Claude Desktop alkalmazásban
 
-Mindegyik funkcióját (eszköz, erőforrás, prompt) tesztelheted a Claude Desktop alkalmazásban. Én most a legösszetettebbet írom le lépésről lépésre. Ebben a példában a **prompt**-ot felhasználva (rendszeresen végrehajtandó feladarta utasítom az AI-t) kérem meg, hogy elemezze az **erőforrásban** lévő hibalogot. Az alapján készítsen egy incidens jelentést. Az incidensen számát összegezze az **Összeadás** **eszközzel**. Végül ezt az egészet küldje el az email címemre. 
+Mindegyik funkcióját (eszköz, erőforrás, prompt) tesztelheted a Claude Desktop alkalmazásban. Én most a legösszetettebbet írom le lépésről lépésre. Ebben a példában a **prompt**-ot felhasználva (rendszeresen végrehajtandó feladarta utasítom az AI-t) kérem meg, hogy elemezze az **erőforrásban** lévő hibalogot. Az alapján készítsen egy incidens jelentést. Az incidensen számát összegezze az **Összeadás** **eszközzel**. Végül ezt az egészet küldje el az email címemre.
 
 Ezzel egy multi-agent-es MCP-s tesztet hajtottál végre a Claude Desktop alkalmazásban.
 
 Lépések a teszteléshez:
+
 1. Nyisd meg a Claude Desktop alkalmazást.
 2. Nyiss egy chat ablakot a Claude Desktop alkalmazásban.
 3. Kattints a **+** gombra, majd a **Connections** menüpontra.
-4. Itt válaszd az **Add from Első MCP Szerverem** lehetőségből az  **Incidens jelentés (prompt)** opciót.
+4. Itt válaszd az **Add from Első MCP Szerverem** lehetőségből az **Incidens jelentés (prompt)** opciót.
 
-![alt add_incident_report_prompt](../assets/add_incident_report_prompt.png)
-5. Ezzel hozzáadtad az **Incidens jelentés (prompt)** kapcsolatot a chat ablakhoz.
-6. Mivel a Claude Desktop nem támogatja megfelelően az erőforrások közvetlen kezelését, így azt is kézzel kell hozzáadnod a chat ablakhoz.
-7. Ehhez kattints a **+** gombra, majd a **Connections** menüpontra.
-8. Itt válaszd az **Add from Első MCP Szerverem** lehetőségből az  **Webshop logfájl beolvasása (erőforrás)** opciót.
+![alt add_incident_report_prompt](../assets/add_incident_report_prompt.png) 5. Ezzel hozzáadtad az **Incidens jelentés (prompt)** kapcsolatot a chat ablakhoz. 6. Mivel a Claude Desktop nem támogatja megfelelően az erőforrások közvetlen kezelését, így azt is kézzel kell hozzáadnod a chat ablakhoz. 7. Ehhez kattints a **+** gombra, majd a **Connections** menüpontra. 8. Itt válaszd az **Add from Első MCP Szerverem** lehetőségből az **Webshop logfájl beolvasása (erőforrás)** opciót.
 
-![alt add_webshop_log_resource](../assets/add_webshop_log_resource.png)
-9. Ezzel hozzáadtad a **Webshop logfájl beolvasása (erőforrás)** kapcsolatot a chat ablakhoz.
-10. Most már mindkét szükséges kapcsolat hozzá van adva a chat ablakhoz, és elkezdheted a multi-agent-es MCP tesztet a prompt segítségével.
+![alt add_webshop_log_resource](../assets/add_webshop_log_resource.png) 9. Ezzel hozzáadtad a **Webshop logfájl beolvasása (erőforrás)** kapcsolatot a chat ablakhoz. 10. Most már mindkét szükséges kapcsolat hozzá van adva a chat ablakhoz, és elkezdheted a multi-agent-es MCP tesztet a prompt segítségével.
 
 ![alt multi_agent_mcp_test](../assets/multi_agent_mcp_test.png)
 
 11. Nem kell semmit beírnod, hiszen a prompt készen be lett töltve. Csak üss **Enter**-t a chat ablakban a multi-agent-es MCP teszt elindításához.
 12. Figyeld meg az AI válaszait, és ellenőrizd, hogy az incidens jelentés elkészült-e, valamint mit reagál a modell.
+
+## 4. Integráció egyéb alkalmazásokkal
+
+### ChatGPT Codex
+
+Ebben az esetben parancssorból hozzáadni a legegyszerűbb.
+
+1. Nyisd meg a terminált a számítógépeden.
+2. Ellenőrizd, hogy a Codex telepítve van-e a számítógépeden a következő paranccsal:
+
+```bash
+codex --version
+```
+
+3. Ha a Codex nincs telepítve, telepítsd a következő paranccsal:
+
+```bash
+npm install -g @openai/codex
+```
+
+4. Ellenőrizd, hogy a Codex telepítése sikeres volt-e a a 2-es pont szerint,
+5. Kérezd le a telepített MCP-k listáját a következő paranccsal:
+
+```bash
+codex mcp list
+```
+
+6. Ha megnézzük, nincs benne a mi MCP szerverünk. Akkor adjuk hozzá a következő paranccsal:
+
+```bash
+codex mcp add elso_mcp_szerverem -- \
+  /opt/homebrew/bin/uv \
+  --directory /Users/tibor.kiss/dev/local/trn-ai-mcp/elso-mcp-szerverem \
+  run mcp run src/elso_mcp_szerverem/server.py
+```
+
+Természetesen a fenti parancsokat a saját rendszeredhez és a telepítési útvonalakhoz kell igazítani.
+
+7. Futtatás után ezt kell kiírnia: `Added global MCP server 'elso_mcp_szerverem'.`
+8. Ellenőrizd újra a telepített MCP-k listáját a `codex mcp list` paranccsal, hogy megbizonyosodj róla, hogy az új MCP szerver hozzáadása sikeres volt. A Codex konfigurációs fájlja, ami ezeket a beállításokat tartalmazza itt található: `~/.codex/config.toml`.
+
+9. Teszteléshez lépj be a codex parancssorba a következő paranccsal:
+
+```bash
+codex
+```
+
+10. A codex parancssorban írd be a következő promptot az MCP szerver teszteléséhez:
+
+```bash
+Használd az Osszeadas eszközt: mennyi 1234567 + 7654321?
+```
+
+_Megjegyzés: Ha jóváhagyást kér az MCP eszköz használatához, akkor add meg az **Allow** vagy az \*Allow for this session\*\* lehetőséget választva._
+
+11. Látszik, hogy meghívta a **Összeadás** eszközt, és a helyes eredményt adta vissza.
+
+![alt osszeadas_result](../assets/osszeadas_result.png)
+
