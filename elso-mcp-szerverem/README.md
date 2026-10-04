@@ -10,15 +10,14 @@ Ezzel sokkal gyorsabban és rövidebben tudjuk ugyanazt a funkcionalitást megva
 
 ## Tartalomjegyzék
 
-1. [Tartalomjegyzék](#tartalomjegyzék)
-2. [Mappastruktúra](#mappastruktúra)
-3. [Megjegyzés](#megjegyzés)
-4. [1. lépés: Alap MCP szerver](#1-lépés-alap-mcp-szerver)
-5. [2. lépés: Képességek hozzáadása](#2-lépés-képességek-hozzáadása)
+- [Mappastruktúra](#mappastruktúra)
+- [Megjegyzés](#megjegyzés)
+- [1. lépés: Alap MCP szerver](#1-lépés-alap-mcp-szerver)
+- [2. lépés: Képességek hozzáadása](#2-lépés-képességek-hozzáadása)
    - [Első eszköz hozzáadása](#első-eszköz-hozzáadása)
    - [Első erőforrás hozzáadása](#első-erőforrás-hozzáadása)
    - [Első prompt hozzáadása](#első-prompt-hozzáadása)
-6. [3. Integráció Claude Desktop alkalmazással és az MCP Inspector használata](#3-integráció-claude-desktop-alkalmazással-és-az-mcp-inspector-használata)
+- [3. Integráció Claude Desktop alkalmazással és az MCP Inspector használata](#3-integráció-claude-desktop-alkalmazással-és-az-mcp-inspector-használata)
    - [MCP Inspector használata](#mcp-inspector-használata)
      - [MCP Inspector indítása](#mcp-inspector-indítása)
      - [MCP Inspector használata](#mcp-inspector-használata-1)
@@ -35,7 +34,7 @@ Ezzel sokkal gyorsabban és rövidebben tudjuk ugyanazt a funkcionalitást megva
      - [Hibakezelés](#hibakezelés)
      - [Gmail kapcsolat hozzáadása és aktiválása Claude Desktop alkalmazáshoz](#gmail-kapcsolat-hozzáadása-és-aktiválása-claude-desktop-alkalmazáshoz)
      - [MCP szerver tesztelése Claude Desktop alkalmazásban](#mcp-szerver-tesztelése-claude-desktop-alkalmazásban)
-7. [4. Integráció egyéb alkalmazásokkal](#4-integráció-egyéb-alkalmazásokkal)
+- [4. Integráció egyéb alkalmazásokkal](#4-integráció-egyéb-alkalmazásokkal)
    - [ChatGPT Codex](#chatgpt-codex)
    - [Cursor](#cursor)
 
