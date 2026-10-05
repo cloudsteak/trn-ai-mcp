@@ -19,6 +19,7 @@ from pathlib import Path
 from typing import Any
 
 from mcp import Client, StdioServerParameters
+from mcp.client.stdio import stdio_client
 from mcp.client.streamable_http import streamable_http_client
 from mcp.server.mcpserver import MCPServer
 from mcp.server.subscriptions import ToolsListChanged
@@ -156,19 +157,32 @@ async def _http_client(url: str, headers: dict[str, str] | None):
         yield streams
 
 
-def _client_target(spec: ExternalSpec):
-    if spec.url:
-        return _http_client(spec.url, spec.headers or None)
-    if not spec.command:
-        raise ValueError(f"External MCP {spec.name!r} needs command or url")
+@asynccontextmanager
+async def _stdio_client(spec: ExternalSpec):
+    """Stdio külső MCP, a stderrje a sajátunktól elválasztva.
+
+    Az Inspector a mi stderrünket olvassa. Az npx és az OAuth-log, ha ide folyik,
+    megtölti a csövet: a folyamat írása blokkol, a kliens pedig timeoutol.
+    """
     expand_process_path()
     command = shutil.which(spec.command) or spec.command
-    return StdioServerParameters(
+    params = StdioServerParameters(
         command=command,
         args=list(spec.args),
         env={**os.environ, **(spec.env or {})},
         cwd=str(PROJECT_ROOT),
     )
+    with open(os.devnull, "w", encoding="utf-8") as errlog:
+        async with stdio_client(params, errlog=errlog) as streams:
+            yield streams
+
+
+def _client_target(spec: ExternalSpec):
+    if spec.url:
+        return _http_client(spec.url, spec.headers or None)
+    if not spec.command:
+        raise ValueError(f"External MCP {spec.name!r} needs command or url")
+    return _stdio_client(spec)
 
 
 _TITLES = {
@@ -307,6 +321,8 @@ async def _connect_all(
     clients: dict[str, Client],
     opened: list[Client],
 ) -> None:
+    # A session előbb olvassa az initialize-t, mint hogy az npx elindul.
+    await asyncio.sleep(0)
     results = await asyncio.gather(
         *(_connect_external(server, spec, clients) for spec in load_externals())
     )
