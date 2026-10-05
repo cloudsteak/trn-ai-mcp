@@ -1,0 +1,7 @@
+{
+  "mcpServers": {
+    "Fejlett MCP Szerver": {
+      "url": "https://<A_CLOUD_RUN_CIMED>/mcp"
+    }
+  }
+}

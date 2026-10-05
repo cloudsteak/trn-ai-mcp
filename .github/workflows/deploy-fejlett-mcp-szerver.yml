@@ -1,0 +1,80 @@
+name: Deploy fejlett-mcp-szerver
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "fejlett-mcp-szerver/**"
+      - ".github/workflows/deploy-fejlett-mcp-szerver.yml"
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: GitHub Actions változók
+        env:
+          GCP_PROJECT_ID: ${{ vars.GCP_PROJECT_ID }}
+          GCP_REGION: ${{ vars.GCP_REGION }}
+          GCP_SERVICE_NAME: ${{ vars.GCP_SERVICE_NAME }}
+          GCP_ARTIFACT_REPO: ${{ vars.GCP_ARTIFACT_REPO }}
+          GCP_IMAGE_NAME: ${{ vars.GCP_IMAGE_NAME }}
+          GCP_WIF_PROVIDER: ${{ vars.GCP_WIF_PROVIDER }}
+          GCP_DEPLOY_SERVICE_ACCOUNT: ${{ vars.GCP_DEPLOY_SERVICE_ACCOUNT }}
+          GCP_RUNTIME_SERVICE_ACCOUNT: ${{ vars.GCP_RUNTIME_SERVICE_ACCOUNT }}
+        run: |
+          missing=0
+          for name in \
+            GCP_PROJECT_ID \
+            GCP_REGION \
+            GCP_SERVICE_NAME \
+            GCP_ARTIFACT_REPO \
+            GCP_IMAGE_NAME \
+            GCP_WIF_PROVIDER \
+            GCP_DEPLOY_SERVICE_ACCOUNT \
+            GCP_RUNTIME_SERVICE_ACCOUNT
+          do
+            if [[ -z "${!name}" ]]; then
+              echo "Hiányzó GitHub Actions változó: $name"
+              missing=1
+            fi
+          done
+          if [[ "$missing" -ne 0 ]]; then
+            echo "A Prepare írja be őket: gh variable set. Érték nincs a workflow fájlban."
+            exit 1
+          fi
+
+      - uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ vars.GCP_WIF_PROVIDER }}
+          service_account: ${{ vars.GCP_DEPLOY_SERVICE_ACCOUNT }}
+
+      - uses: google-github-actions/setup-gcloud@v2
+
+      - name: Docker bejelentkezés az Artifact Registrybe
+        run: gcloud auth configure-docker "${{ vars.GCP_REGION }}-docker.pkg.dev" --quiet
+
+      - name: Image build és push
+        env:
+          IMAGE: ${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/${{ vars.GCP_ARTIFACT_REPO }}/${{ vars.GCP_IMAGE_NAME }}
+        run: |
+          docker build \
+            -t "${IMAGE}:${GITHUB_SHA}" \
+            fejlett-mcp-szerver
+          docker push "${IMAGE}:${GITHUB_SHA}"
+
+      - name: Cloud Run deploy
+        env:
+          IMAGE: ${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/${{ vars.GCP_ARTIFACT_REPO }}/${{ vars.GCP_IMAGE_NAME }}
+        run: |
+          gcloud run deploy "${{ vars.GCP_SERVICE_NAME }}" \
+            --project="${{ vars.GCP_PROJECT_ID }}" \
+            --region="${{ vars.GCP_REGION }}" \
+            --image="${IMAGE}:${GITHUB_SHA}" \
+            --service-account="${{ vars.GCP_RUNTIME_SERVICE_ACCOUNT }}" \
+            --update-env-vars="MCP_TRANSPORT=streamable-http,MCP_EXTERNALS=/app/externals.cloudrun.json"
