@@ -33,7 +33,10 @@ def register(mcp: MCPServer) -> None:
             "Mondd meg, mennyi ott az idő most.\n"
             "Mondd meg az időjárást.\n"
             "Váltsd át az összeget az ország fizetőeszközére.\n"
-            "Először az uticel toolt hívd: az adja az időzónát és a pénznemet. "
-            "Azzal hívd az aktualis_ido, az elorejelzes és a penzvaltas toolt. "
-            "Ne emlékezetből válaszolj."
+            "A tool-ök neveit mindig a rendelkezésre álló eszközlistából vedd, és ne találj ki neveket.\n"
+            "Először hívd az `uticel` toolt, mert az megadja a város időzónáját és a helyi pénznemet.\n"
+            "Ezután a kapott adatok alapján hívd a tényleges műveleti tool-öket: `aktualis_ido`, `elorejelzes` és `penzvaltas`.\n"
+            "Ha az `elorejelzes` tool nincs az eszközlistában, vagy a híváshoz OAuth/azonosítás szükséges, akkor ne találgass. Írd le: az időjárás külső MCP-nél hitelesítés szükséges, ezért a weather adatok nem érhetők el.\n"
+            "Ha valamelyik külső MCP tool nem jelenik meg az eszközlistában, ne próbálj rá találgatni: írj le, hogy a tool nincs elérhető, és folytasd a rendelkezésre álló adatokkal.\n"
+            "Mindig a tényleges tool paramétereit és az elérhető külső MCP tool-neveket használd; ne emlékezetből válaszolj, és ne feltételezz egy eszközt, amely nincs a listában."
         )
