@@ -1,0 +1,50 @@
+[
+  {
+    "name": "exchange-rate",
+    "command": "npx",
+    "args": ["-y", "exchange-rate-mcp"],
+    "rename": {
+      "get_exchange_rate": "penzvaltas"
+    }
+  },
+  {
+    "name": "smarter-weather",
+    "command": "npx",
+    "args": ["-y", "@smarterweather/mcp-weather"],
+    "env": {
+      "SMARTERWEATHER_MCP_URL": "https://mcp.smarterweather.com"
+    },
+    "only": ["get_forecast", "get_alerts", "get_air_quality"],
+    "rename": {
+      "get_forecast": "elorejelzes",
+      "get_alerts": "riasztasok",
+      "get_air_quality": "levegominoseg"
+    }
+  },
+  {
+    "name": "github",
+    "url": "https://api.githubcopilot.com/mcp/",
+    "headers": {
+      "Authorization": "Bearer ${GITHUB_PERSONAL_ACCESS_TOKEN}"
+    },
+    "require_env": ["GITHUB_PERSONAL_ACCESS_TOKEN"],
+    "only": [
+      "get_me",
+      "search_repositories",
+      "get_file_contents",
+      "list_issues",
+      "list_pull_requests",
+      "search_issues",
+      "search_pull_requests"
+    ],
+    "rename": {
+      "get_me": "github_profil",
+      "search_repositories": "repo_kereses",
+      "get_file_contents": "fajl_tartalom",
+      "list_issues": "issue_lista",
+      "list_pull_requests": "pr_lista",
+      "search_issues": "issue_kereses",
+      "search_pull_requests": "pr_kereses"
+    }
+  }
+]

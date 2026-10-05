@@ -5,6 +5,7 @@ Ez a Mentor Klub számára készült segédleteket tartalmazza a multi-agent ren
 ## Tartalomjegyzék
 
 - [Első MCP szerverem](#első-mcp-szerverem)
+- [Fejlett MCP szerver](#fejlett-mcp-szerver)
 - [Előfeltételek](#előfeltételek)
 - [Alap parancsok a teljesen új projekthez](#alap-parancsok-a-teljesen-új-projekthez)
 
@@ -12,6 +13,10 @@ Ez a Mentor Klub számára készült segédleteket tartalmazza a multi-agent ren
 ## Első MCP szerverem
 
 Ez a projekt egy teljes, működő példa az első MCP szerver létrehozására Pythonben. Bemutatja a projekt inicializálását, a virtuális környezet és függőségek telepítését, majd az MCP szerver alapbeállítását, a tool/resource/prompt létrehozását, valamint az MCP Inspector és a Claude Desktop integrációját. A dokumentáció végigvezeti a tesztelésen, a hibakeresésen és a Gmail kapcsolat aktiválásán is. Részletek a [README](elso-mcp-szerverem/README.md) fájlban.
+
+## Fejlett MCP szerver
+
+A következő lépés az első szerver után. Ugyanaz a `src` elrendezés és a Python 3.13, de a toolok, resource-ok és promptok külön fájlban vannak, és a szerver külső MCP-ket is csatol. Részletek a [README](fejlett-mcp-szerver/README.md) fájlban.
 
 ## Előfeltételek
 
