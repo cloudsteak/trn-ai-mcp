@@ -41,6 +41,8 @@ fejlett-mcp-szerver/
 ├── pyproject.toml
 ├── uv.lock
 ├── Dockerfile
+├── package.json
+├── package-lock.json
 ├── .dockerignore
 ├── .env.example
 ├── externals.json
@@ -80,7 +82,7 @@ fejlett-mcp-szerver/
 | Utazás (prompt) | `varos`, `orszag`, `osszeg` (alap: 1000000), `penznem` (alap: HUF) |
 | Holnapi időjárás (prompt) | `hely` (alap: Budapest), az `elorejelzes` toolt hívja |
 | `penzvaltas` | [exchange-rate-mcp](https://www.npmjs.com/package/exchange-rate-mcp), stdio |
-| `elorejelzes`, `riasztasok`, `levegominoseg` | [@smarterweather/mcp-weather](https://www.npmjs.com/package/@smarterweather/mcp-weather), stdio |
+| `hely_kereses`, `elorejelzes`, `levegominoseg` | [Open-Meteo MCP](https://github.com/cyanheads/open-meteo-mcp-server), HTTP: `https://open-meteo.caseyjhand.com/mcp`. Kulcs nincs. A nem kereskedelmi használat ingyenes, az adat az [Open-Meteo](https://open-meteo.com/) (CC BY 4.0). |
 | `github_profil`, `repo_kereses`, `fajl_tartalom`, `issue_lista`, `pr_lista`, `issue_kereses`, `pr_kereses` | [GitHub MCP](https://github.com/github/github-mcp-server), HTTP: `https://api.githubcopilot.com/mcp/` |
 
 Az `uticel` ezeket a városokat ismeri: Cancun, Budapest, Bécs, Prága, London, Párizs, Róma, Barcelona, New York, Tokió, Dubai. Az ékezet és a kis-nagybetű mindegy. Ismeretlen városnál megmondja, hogy nincs adat. Alap: Cancun, Mexikó.
@@ -133,7 +135,7 @@ cp .env.example .env
 | `MCP_TRANSPORT` | `stdio` (alap) vagy `streamable-http`. |
 | `HOST`, `PORT` | HTTP kötés. Alap: `0.0.0.0`, `8080`. |
 
-Üres kulcsnál az a külső MCP nem indul. A Cloud Runon a token a Secret Managerből jön, a neve ugyanaz: `GITHUB_PERSONAL_ACCESS_TOKEN`. Az `npx`-es árfolyam és időjárás a konténerben nincs.
+Üres kulcsnál az a külső MCP nem indul. A Cloud Runon a GitHub token a Secret Managerből jön, a neve ugyanaz: `GITHUB_PERSONAL_ACCESS_TOKEN`. Az árfolyam és az időjárás kulcs nélkül megy. Az időjárás ugyanaz a HTTP MCP helyben és a Cloud Runon.
 
 ## Claude Desktop helyi integráció
 
@@ -222,7 +224,7 @@ API-k, Artifact Registry, a két service account, OIDC provider, a secret, és h
 
 ### Deploy
 
-Ugyanaz az előkészítés, utána `linux/amd64` image, push, Cloud Run. A konténer az `externals.cloudrun.json` fájlt használja: csak a GitHub HTTP MCP. Node és `npx` nincs az image-ben.
+Ugyanaz az előkészítés, utána `linux/amd64` image, push, Cloud Run. A konténer az `externals.cloudrun.json` fájlt használja. Az image a buildkor telepíti a Node-ot és az `exchange-rate-mcp`-t, a `penzvaltas` kulcs nélkül elérhető. Az időjárás HTTP MCP, ugyanaz a cím, mint helyben: `hely_kereses`, `elorejelzes`, `levegominoseg`. A GitHub MCP HTTP-n megy.
 
 ```bash
 ./scripts/prepare-gcp-deploy.sh --deploy
@@ -286,7 +288,7 @@ codex mcp add Fejlett-MCP-Szerver --url "https://<A_CLOUD_RUN_CIMED>/mcp"
 
 ## Remote tesztelés
 
-Ezek a Cloud Runon lévő szervert érik. Az árfolyam és az időjárás `npx` MCP, azok a konténerben nincsenek.
+Ezek a Cloud Runon lévő szervert érik. A `penzvaltas` az image-beli árfolyam MCP. Az időjárás toolok is ezen a szerveren vannak.
 
 ### MCP Inspector
 
@@ -325,6 +327,8 @@ Ha jóváhagyást kér, **Allow**. Az **Összeadás** `42`-t ad.
 - „Hány óra van 2026-09-25 10:00 és 2026-09-25 12:30 között?”
 - „Generálj egy 20 karakteres jelszót.”
 - „Milyen időzóna és pénznem van Cancunban, Mexikóban?”
+- „Mennyi az árfolyam HUF-ról MXN-re?” A **Pénzváltás** válaszol.
+- „Milyen az időjárás Cancunban?” Az **Előrejelzés** válaszol.
 - Resource `utazas://adatok`: foglalás DTL250113.
 - „Ki vagyok a GitHubon?”
 - „Keress Python MCP repo-kat.”

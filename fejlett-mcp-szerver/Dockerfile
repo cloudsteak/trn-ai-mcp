@@ -1,4 +1,16 @@
-FROM python:3.13-slim
+FROM node:22-bookworm-slim AS nodejs
+
+FROM python:3.13-slim-bookworm
+
+COPY --from=nodejs /usr/local/bin/node /usr/local/bin/node
+COPY --from=nodejs /usr/local/lib/node_modules /usr/local/lib/node_modules
+
+WORKDIR /opt/externals
+COPY package.json package-lock.json ./
+RUN ln -sf ../lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm \
+ && ln -sf ../lib/node_modules/npm/bin/npx-cli.js /usr/local/bin/npx \
+ && npm ci --omit=dev \
+ && ln -sf /opt/externals/node_modules/.bin/exchange-rate-mcp /usr/local/bin/exchange-rate-mcp
 
 WORKDIR /app
 

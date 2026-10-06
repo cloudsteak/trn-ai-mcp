@@ -187,8 +187,8 @@ def _client_target(spec: ExternalSpec):
 
 _TITLES = {
     "penzvaltas": "Pénzváltás",
+    "hely_kereses": "Hely keresése",
     "elorejelzes": "Előrejelzés",
-    "riasztasok": "Riasztások",
     "levegominoseg": "Levegőminőség",
     "github_profil": "GitHub profil",
     "repo_kereses": "Repókeresés",
@@ -201,9 +201,9 @@ _TITLES = {
 
 _DESCRIPTIONS = {
     "penzvaltas": "Pénzt vált vagy árfolyamot ad (EUR, HUF, USD).",
-    "elorejelzes": "Időjárás és előrejelzés egy helyre.",
-    "riasztasok": "Időjárási riasztások (főleg USA).",
-    "levegominoseg": "Levegőminőség, AQI.",
+    "hely_kereses": "Városnévből koordináta az időjáráshoz.",
+    "elorejelzes": "Időjárás-előrejelzés a hely_kereses koordinátáira.",
+    "levegominoseg": "Levegőminőség a hely_kereses koordinátáira.",
     "github_profil": "A bejelentkezett GitHub felhasználó adatai.",
     "repo_kereses": "GitHub repók keresése.",
     "fajl_tartalom": "Fájl vagy mappa tartalma egy GitHub repóban.",

@@ -8,17 +8,17 @@
     }
   },
   {
-    "name": "smarter-weather",
-    "command": "npx",
-    "args": ["-y", "@smarterweather/mcp-weather"],
-    "env": {
-      "SMARTERWEATHER_MCP_URL": "https://mcp.smarterweather.com"
-    },
-    "only": ["get_forecast", "get_alerts", "get_air_quality"],
+    "name": "open-meteo",
+    "url": "https://open-meteo.caseyjhand.com/mcp",
+    "only": [
+      "openmeteo_search_locations",
+      "openmeteo_get_forecast",
+      "openmeteo_get_air_quality"
+    ],
     "rename": {
-      "get_forecast": "elorejelzes",
-      "get_alerts": "riasztasok",
-      "get_air_quality": "levegominoseg"
+      "openmeteo_search_locations": "hely_kereses",
+      "openmeteo_get_forecast": "elorejelzes",
+      "openmeteo_get_air_quality": "levegominoseg"
     }
   },
   {

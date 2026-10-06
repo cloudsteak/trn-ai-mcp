@@ -181,8 +181,8 @@ async def test_holnapi_idojaras_prompt(client: Client) -> None:
     message = result.messages[0]
     assert message.role == "user"
     assert message.content.text == (
-        "Mondd meg a holnapi időjárást. Az elorejelzes toolt hívd, "
-        "ne emlékezetből válaszolj.\n\n"
+        "Mondd meg a holnapi időjárást. Először a hely_kereses toolt hívd a koordinátákért, "
+        "utána az elorejelzes toolt. Ne emlékezetből válaszolj.\n\n"
         "Hely: Budapest"
     )
 

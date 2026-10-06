@@ -17,7 +17,7 @@ FORCE="false"
 usage() {
   cat <<'EOF'
 Használat:
-  export PROJECT_ID="$PROJECT_ID"
+  export PROJECT_ID="<Te GCP Projekted ID-ja>"
   ./scripts/teardown-gcp-deploy.sh --force
   ./scripts/teardown-gcp-deploy.sh --yes
 

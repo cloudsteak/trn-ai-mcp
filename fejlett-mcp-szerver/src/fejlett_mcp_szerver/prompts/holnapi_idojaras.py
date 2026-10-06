@@ -21,7 +21,7 @@ def register(mcp: MCPServer) -> None:
         """
         logger.info("holnapi_idojaras hely=%s", hely)
         return (
-            "Mondd meg a holnapi időjárást. Az elorejelzes toolt hívd, "
-            "ne emlékezetből válaszolj.\n\n"
+            "Mondd meg a holnapi időjárást. Először a hely_kereses toolt hívd a koordinátákért, "
+            "utána az elorejelzes toolt. Ne emlékezetből válaszolj.\n\n"
             f"Hely: {hely}"
         )
