@@ -1,0 +1,36 @@
+[project]
+name = "fejlett-mcp-szerver"
+version = "0.1.0"
+description = "Az első MCP szerver következő lépése: több képesség és külső MCP-k."
+readme = "README.md"
+authors = [
+    { name = "Cloud Mentor", email = "tibor.kiss@cloudmentor.hu" }
+]
+requires-python = ">=3.13"
+dependencies = [
+    "mcp[cli]>=2.2.0,<3",
+    "qrcode[pil]>=8.2",
+]
+
+[project.scripts]
+fejlett-mcp-szerver = "fejlett_mcp_szerver.server:main"
+
+[build-system]
+requires = ["uv_build>=0.12.9,<0.13.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0.0",
+    "ruff>=0.16.10",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+target-version = "py313"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I"]

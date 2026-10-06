@@ -1,0 +1,8 @@
+{
+  "name": "fejlett-mcp-szerver-externals",
+  "private": true,
+  "description": "A Cloud Run image ezeket a stdio MCP-ket a buildkor telepíti.",
+  "dependencies": {
+    "exchange-rate-mcp": "1.0.0"
+  }
+}

@@ -1,0 +1,35 @@
+name: CI fejlett-mcp-szerver
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "fejlett-mcp-szerver/**"
+      - ".github/workflows/ci-fejlett-mcp-szerver.yml"
+      - ".github/workflows/deploy-fejlett-mcp-szerver.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: fejlett-mcp-szerver
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: astral-sh/setup-uv@v7
+        with:
+          python-version: "3.13"
+          enable-cache: true
+
+      - name: Függőségek
+        run: uv sync --frozen
+
+      - name: Lint
+        run: uv run ruff check .
+
+      - name: Tesztek
+        run: uv run pytest
