@@ -1,4 +1,5 @@
 import pytest
+
 from fejlett_mcp_szerver.tools.idokulonbseg import difference, parse_moment
 from fejlett_mcp_szerver.tools.jelszo import new_password
 from fejlett_mcp_szerver.tools.qr_kod import render_qr_png, save_qr_png

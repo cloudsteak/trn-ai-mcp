@@ -250,9 +250,11 @@ A Deploy kiírja a Service URL-t. A kliens címe ez, plusz `/mcp`. A további l�
 
 ### CI/CD
 
-A [`.github/workflows/deploy-fejlett-mcp-szerver.yml`](../.github/workflows/deploy-fejlett-mcp-szerver.yml) a `main` ágra merge után fut, ha a `fejlett-mcp-szerver/` mappa vagy maga a workflow fájl változott. OIDC-vel lép be a deploy service accounthoz. A provider, a fiók és a projekt a GitHub Actions változókban van (`GCP_PROJECT_ID`, `GCP_REGION`, `GCP_WIF_PROVIDER`, `GCP_DEPLOY_SERVICE_ACCOUNT`, `GCP_RUNTIME_SERVICE_ACCOUNT`, és a többi `GCP_*`). A workflow fájlban nincs belőlük érték.
+A szűrő mindkét résznél a `fejlett-mcp-szerver/` mappa. A CI a saját workflow fájljára és a deploy workflow fájlra is indul. A deploy a saját workflow fájljára is indul.
 
-A futás `docker build`, `docker push`, majd `gcloud run deploy`. A secret kötést nem írja felül: azt az első kézi deploy teszi fel. PR-t a `main`-re merge-ölj. A GitHub **Actions** fülön a **Deploy fejlett-mcp-szerver** futás zöld, a Cloud Run új revisiont kap.
+A [`.github/workflows/ci-fejlett-mcp-szerver.yml`](../.github/workflows/ci-fejlett-mcp-szerver.yml) a `main` ágra nyitott pull requesten fut. Először a lint (`ruff check`), utána a tesztek (`pytest`).
+
+A [`.github/workflows/deploy-fejlett-mcp-szerver.yml`](../.github/workflows/deploy-fejlett-mcp-szerver.yml) a `main` ágra merge után fut. OIDC-vel lép be a deploy service accounthoz. A provider, a fiók és a projekt a GitHub Actions változókban van (`GCP_PROJECT_ID`, `GCP_REGION`, `GCP_WIF_PROVIDER`, `GCP_DEPLOY_SERVICE_ACCOUNT`, `GCP_RUNTIME_SERVICE_ACCOUNT`, és a többi `GCP_*`). A workflow fájlban nincs belőlük érték. A futás `docker build`, `docker push`, majd `gcloud run deploy`. A secret kötést az első kézi deploy teszi fel, a további deploy ezt a kötést meghagyja. A GitHub **Actions** fülön a **Deploy fejlett-mcp-szerver** futás zöld, a Cloud Run új revisiont kap.
 
 ## Remote integráció
 

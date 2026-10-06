@@ -15,10 +15,10 @@ import os
 from mcp.server.mcpserver import MCPServer
 
 from fejlett_mcp_szerver import __version__
+from fejlett_mcp_szerver.externals import expand_process_path, external_lifespan
 from fejlett_mcp_szerver.prompts import register_prompts
 from fejlett_mcp_szerver.resources import register_resources
 from fejlett_mcp_szerver.tools import register_tools
-from fejlett_mcp_szerver.externals import expand_process_path, external_lifespan
 
 mcp = MCPServer(
     "fejlett-mcp-szerver",
