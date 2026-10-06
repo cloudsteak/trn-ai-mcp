@@ -19,6 +19,7 @@ Protokoll: [2026-07-28](https://modelcontextprotocol.io/docs/2026-07-28/getting-
    - [Bejelentkezés](#bejelentkezés)
    - [Jogosultság](#jogosultság)
    - [Prepare](#prepare)
+   - [env.gcp](#envgcp)
    - [Deploy](#deploy)
    - [CI/CD](#cicd)
 - [Remote integráció](#remote-integráció)
@@ -47,6 +48,9 @@ fejlett-mcp-szerver/
 ├── .env.example
 ├── externals.json
 ├── externals.cloudrun.json
+├── scripts
+│   ├── prepare-gcp-deploy.sh
+│   └── teardown-gcp-deploy.sh
 ├── examples
 │   └── cursor_mcp.json
 ├── src
@@ -170,7 +174,7 @@ A **Developer** listában a **Fejlett MCP Szerver** szerepel. A **Connections** 
 
 ## Cloud Run
 
-A parancsokat a repo gyökeréből futtasd, ebben a sorrendben. A projekt azonosító, a GitHub repo, a secret neve és a token nem része a parancsoknak: a projekt a `PROJECT_ID` környezeti változó, a repo a `git origin`, a token a `GITHUB_PERSONAL_ACCESS_TOKEN`.
+A parancsokat a `fejlett-mcp-szerver` mappából futtasd, ebben a sorrendben. A projekt azonosító, a GitHub repo, a secret neve és a token nem része a parancsoknak: a projekt a `PROJECT_ID` környezeti változó, a repo a `git origin`, a token a `GITHUB_PERSONAL_ACCESS_TOKEN`.
 
 ### Bejelentkezés
 
@@ -206,11 +210,33 @@ Az első, kézi deploy a service-t nyilvánosan hívhatóvá teszi. A CI deploy 
 
 ### Prepare
 
-API-k, Artifact Registry, a két service account, OIDC provider, a secret, és ha a `gh` be van lépve, a GitHub Actions változók. Image még nem készül. A `fejlett-mcp-szerver/.env.gcp` helyi fájl, gitignore alatt van, ne commitold.
+A felhős erőforrásokat hozza létre. Image még nem készül, a Cloud Run service sem indul. A `fejlett-mcp-szerver` mappából:
 
 ```bash
 ./scripts/prepare-gcp-deploy.sh
 ```
+
+Létrejön az API-engedély, az Artifact Registry repo, a két service account, a Workload Identity OIDC provider, és a GitHub token secretje a helyi `.env`-ből. Ha a `gh` be van lépve, a `GCP_*` Actions változók is bekerülnek a repóra. A végén a script felülírja a `fejlett-mcp-szerver/.env.gcp` fájlt.
+
+Az alapérték elég. Más érték a [env.gcp](#envgcp) táblázat szerint a script előtt exportálható, utána ugyanez a parancs fut újra. A fájl szerkesztése a GCP-t nem változtatja meg, mert a script ezt a fájlt nem olvassa.
+
+### env.gcp
+
+Helyi jegyzék arról, amit a Prepare létrehozott. Gitignore alatt van, ne commitold. A Törlés letörli. A következő Prepare felülírja.
+
+| Kulcs | Jelentése | Módosítás a script előtt |
+| --- | --- | --- |
+| `PROJECT_ID` | A GCP projekt azonosítója. | `export PROJECT_ID="<Te GCP Projekted ID-ja>"` |
+| `REGION` | A régió. Alap: `europe-west1`. | `export REGION="<a régió>"` |
+| `ARTIFACT_REPO` | Az Artifact Registry repo neve. Alap: `fejlett-mcp-szerver`. | `export ARTIFACT_REPO="<a repo neve>"` |
+| `SERVICE_NAME` | A Cloud Run service neve. Alap: `fejlett-mcp-szerver`. | `export SERVICE_NAME="<a service neve>"` |
+| `RUNTIME_SA` | A futásidejű fiók emailje. A script a névből rakja össze. | `export RUNTIME_SA_NAME="<a név>"` |
+| `DEPLOY_SA` | A CI deploy fiók emailje. | `export DEPLOY_SA_NAME="<a név>"` |
+| `IMAGE_URI` | Az image teljes címe, a régióból, a projektből, a repóból és a tagből. | `export IMAGE_NAME="<a név>"` és `export IMAGE_TAG="<a tag>"` |
+| `MCP_TRANSPORT` | A Cloud Run transportja. Mindig `streamable-http`. | A Prepare ezt így írja. |
+| `MCP_EXTERNALS` | A konténer külső MCP fájlja. Mindig `/app/externals.cloudrun.json`. | A Prepare ezt így írja. |
+| `GITHUB_MCP_SECRET` | A secret neve, nem a token. Alap: `<SERVICE_NAME>-github-pat`. | `export GITHUB_MCP_SECRET="<a secret neve>"` |
+| `WIF_PROVIDER` | Az OIDC provider teljes erőforrásneve. | `export WIF_POOL="<a pool>"` és `export WIF_PROVIDER="<a provider>"` |
 
 ### Deploy
 
@@ -325,7 +351,7 @@ Ha jóváhagyást kér, **Allow**. Az **Összeadás** `42`-t ad.
 
 ## Törlés
 
-A felhős erőforrások törlése. A `PROJECT_ID` a [Bejelentkezés](#bejelentkezés) óta a shellben van. A parancs a repo gyökeréből megy.
+A felhős erőforrások törlése. A `PROJECT_ID` a [Bejelentkezés](#bejelentkezés) óta a shellben van. A parancs a `fejlett-mcp-szerver` mappából megy.
 
 ```bash
 ./scripts/teardown-gcp-deploy.sh --force

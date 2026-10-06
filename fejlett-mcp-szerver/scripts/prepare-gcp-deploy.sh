@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-APP_DIR="${APP_DIR:-fejlett-mcp-szerver}"
 PROJECT_ID="${PROJECT_ID:-}"
 REGION="${REGION:-europe-west1}"
 ARTIFACT_REPO="${ARTIFACT_REPO:-fejlett-mcp-szerver}"
@@ -37,7 +36,6 @@ Leírás:
 
 Változók:
   PROJECT_ID                     GCP projekt azonosító (kötelező)
-  APP_DIR                        App könyvtára (alap: fejlett-mcp-szerver)
   REGION                         GCP régió (alap: europe-west1)
   ARTIFACT_REPO                  Artifact Registry repo (alap: fejlett-mcp-szerver)
   SERVICE_NAME                   Cloud Run service (alap: fejlett-mcp-szerver)
@@ -79,8 +77,8 @@ if [[ -z "$PROJECT_ID" ]]; then
   exit 1
 fi
 
-REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-APP_PATH="${REPO_ROOT}/${APP_DIR}"
+APP_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+REPO_ROOT="$(cd "$APP_PATH/.." && pwd)"
 
 if [[ -z "$GITHUB_REPOSITORY" ]]; then
   remote="$(git -C "$REPO_ROOT" remote get-url origin 2>/dev/null || true)"
