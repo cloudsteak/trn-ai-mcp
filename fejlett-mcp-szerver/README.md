@@ -11,12 +11,12 @@ Protokoll: [2026-07-28](https://modelcontextprotocol.io/docs/2026-07-28/getting-
 - [Mappastruktúra](#mappastruktúra)
 - [Mit ad a szerver](#mit-ad-a-szerver)
 - [Külső MCP-k](#külső-mcp-k)
+- [GitHub személyes token](#github-személyes-token)
 - [Kulcsok](#kulcsok)
 - [Claude Desktop helyi integráció](#claude-desktop-helyi-integráció)
    - [E2E teszt](#e2e-teszt)
 - [Cloud Run](#cloud-run)
    - [Bejelentkezés](#bejelentkezés)
-   - [GitHub PAT](#github-pat)
    - [Jogosultság](#jogosultság)
    - [Törlés](#törlés)
    - [Prepare](#prepare)
@@ -101,6 +101,22 @@ Az Utazás prompt először az `uticel` toolt hívatja, majd az időzónával é
 
 A `MCP_EXTERNALS` másik JSON-fájlt ad meg. Az `off` és a `none` kikapcsolja a külső MCP-ket. A tesztek ezt használják.
 
+## GitHub személyes token
+
+A GitHub MCP classic personal access tokent használ. Ezt a GitHubon hozod létre, ezekkel a jogokkal:
+
+1. GitHubon: **Settings**, **Developer settings**, **Personal access tokens**, **Tokens (classic)**.
+2. **Generate new token**, **Generate new token (classic)**.
+3. **Note**: adj neki egy nevet, ami erre a szerverre utal.
+4. **Expiration**: állíts lejáratot.
+5. Jelöld be ezeket a scope-okat:
+   - `repo` — a saját és a szervezet repói, a fájltartalom, az issue-k és a pull requestek.
+   - `read:org` — szervezeti tagság. Az `issue_kereses` és a `pr_kereses` org-szintű kereséséhez kell.
+6. **Generate token**. A tokent a GitHub csak egyszer mutatja. Másold ki.
+7. Ha a szervezet SAML SSO-t használ: a token sorában **Configure SSO**, majd az org mellett **Authorize**.
+
+A token ezután a [Kulcsok](#kulcsok) szerint a helyi `.env` fájlba kerül. Értékét ne írd a repóba.
+
 ## Kulcsok
 
 Az árfolyam és az időjárás kulcs nélkül megy. A GitHubhoz másold a példát, és töltsd ki:
@@ -111,7 +127,7 @@ cp .env.example .env
 
 | Változó | Mire kell |
 | --- | --- |
-| `GITHUB_PERSONAL_ACCESS_TOKEN` | GitHub HTTP MCP. Classic PAT: `repo` és `read:org`. SSO-nál az orgon Authorize. |
+| `GITHUB_PERSONAL_ACCESS_TOKEN` | A fent létrehozott GitHub token. |
 | `QR_OUTPUT_DIR` | A QR PNG mappája. Üresen a Letöltések. |
 | `MCP_EXTERNALS` | Külső MCP-k JSON-ja, vagy `off`. |
 | `MCP_TRANSPORT` | `stdio` (alap) vagy `streamable-http`. |
@@ -161,7 +177,7 @@ Két külön hitelesítés van. Nem helyettesítik egymást.
 A scriptek a **gcloud parancssori** fiókot használják. A `PROJECT_ID` a shellben él, utána a scriptek külön parancsként mennek:
 
 ```bash
-export PROJECT_ID="$PROJECT_ID"
+export PROJECT_ID="<Te GCP Projekted ID-ja>"
 gcloud auth login
 gcloud config set project "$PROJECT_ID"
 ```
@@ -175,16 +191,7 @@ gcloud auth application-default set-quota-project "$PROJECT_ID"
 
 A szkript nem ad szerepet a bejelentkezett fióknak. A projekten előre legyen meg a deployhoz szükséges jogosultság (Owner, vagy a megfelelő admin szerepek).
 
-### GitHub PAT
-
-A GitHub Actions a GCP-be OIDC-vel lép be. A GitHub MCP ettől függetlenül bearer tokent vár. A tokent a shellben add meg. A `read -rs` nem írja ki:
-
-```bash
-read -rs GITHUB_PERSONAL_ACCESS_TOKEN
-export GITHUB_PERSONAL_ACCESS_TOKEN
-```
-
-Ha a változó üres, a Prepare a helyi `.env` fájlból olvassa (az gitignore alatt van). Feltölti a Secret Managerbe. A Cloud Run a futásidejű service accounttal olvassa, a konténerben a változó neve `GITHUB_PERSONAL_ACCESS_TOKEN`. A deploy fiók nem kap olvasási jogot a secretre. Üres tokennél a szerver elindul, a GitHub toolok kimaradnak.
+A Prepare a [GitHub személyes token](#github-személyes-token) értékét a helyi `.env` fájlból a Secret Managerbe teszi. A Cloud Run a futásidejű fiókkal olvassa. A deploy fiók nem kap olvasási jogot a secretre. Üres tokennél a szerver elindul, a GitHub toolok kimaradnak.
 
 ### Jogosultság
 
