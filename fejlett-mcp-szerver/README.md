@@ -18,7 +18,6 @@ Protokoll: [2026-07-28](https://modelcontextprotocol.io/docs/2026-07-28/getting-
 - [Cloud Run](#cloud-run)
    - [Bejelentkezés](#bejelentkezés)
    - [Jogosultság](#jogosultság)
-   - [Törlés](#törlés)
    - [Prepare](#prepare)
    - [Deploy](#deploy)
    - [CI/CD](#cicd)
@@ -32,6 +31,7 @@ Protokoll: [2026-07-28](https://modelcontextprotocol.io/docs/2026-07-28/getting-
    - [Claude Desktopban](#claude-desktopban)
    - [Cursorban és Codexben](#cursorban-és-codexben)
    - [Próbák](#próbák)
+- [Törlés](#törlés)
 
 ## Mappastruktúra
 
@@ -204,16 +204,6 @@ Két service account van.
 
 Az első, kézi deploy a service-t nyilvánosan hívhatóvá teszi. A CI deploy ezt a kapcsolót nem adja meg újra, ezért nem kell hozzá `setIamPolicy`.
 
-### Törlés
-
-Cloud Run service, Artifact Registry repo, mindkét service account, a secret és a Workload Identity pool. A `--force` megerősítés nélkül töröl, és kikapcsolja az API-kat is. A `serviceusage` API-t a szkript nem kapcsolja ki.
-
-```bash
-./scripts/teardown-gcp-deploy.sh --force
-```
-
-Ha az API-k maradjanak a következő Prepare előtt, add hozzá a `--keep-apis` kapcsolót.
-
 ### Prepare
 
 API-k, Artifact Registry, a két service account, OIDC provider, a secret, és ha a `gh` be van lépve, a GitHub Actions változók. Image még nem készül. A `fejlett-mcp-szerver/.env.gcp` helyi fájl, gitignore alatt van, ne commitold.
@@ -332,3 +322,13 @@ Ha jóváhagyást kér, **Allow**. Az **Összeadás** `42`-t ad.
 - Resource `utazas://adatok`: foglalás DTL250113.
 - „Ki vagyok a GitHubon?”
 - „Keress Python MCP repo-kat.”
+
+## Törlés
+
+A felhős erőforrások törlése. A `PROJECT_ID` a [Bejelentkezés](#bejelentkezés) óta a shellben van. A parancs a repo gyökeréből megy.
+
+```bash
+./scripts/teardown-gcp-deploy.sh --force
+```
+
+Ha az API-k bekapcsolva maradjanak, ugyanez a script a `--keep-apis` kapcsolóval.
