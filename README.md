@@ -6,6 +6,7 @@ Ez a Mentor Klub számára készült segédleteket tartalmazza a multi-agent ren
 
 - [Első MCP szerverem](#első-mcp-szerverem)
 - [Fejlett MCP szerver](#fejlett-mcp-szerver)
+- [GCP Logging MCP](#gcp-logging-mcp)
 - [Előfeltételek](#előfeltételek)
 - [Alap parancsok a teljesen új projekthez](#alap-parancsok-a-teljesen-új-projekthez)
 
@@ -17,6 +18,10 @@ Ez a projekt egy teljes, működő példa az első MCP szerver létrehozására 
 ## Fejlett MCP szerver
 
 A következő lépés az első szerver után. A szerver a Cloud Runon fut, a kliens a `/mcp` címre csatlakozik. Részletek a [README](fejlett-mcp-szerver/README.md) fájlban.
+
+## GCP Logging MCP
+
+A Gemini Enterprise Agent Platform MCP listájából a Cloud Logging szervert kötjük a Claude Desktopra. A végpont `https://logging.googleapis.com/mcp`, a belépés OAuth. Részletek a [README](gcp-logging-mcp/README.md) fájlban.
 
 ## Előfeltételek
 
