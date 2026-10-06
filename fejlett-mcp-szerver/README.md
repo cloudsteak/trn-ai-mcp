@@ -258,15 +258,16 @@ A futás `docker build`, `docker push`, majd `gcloud run deploy`. A secret köt�
 
 A szerver a Cloud Runon fut. A kliens a `https://<A_CLOUD_RUN_CIMED>/mcp` címre csatlakozik. A név **Fejlett MCP Szerver**.
 
-A Claude Desktop remote csatlakozása a Connectors felület. A `claude_desktop_config.json` az első szerver helyi folyamatáé.
+A Claude Desktop remote csatlakozása a Connectors felület. A `claude_desktop_config.json` csak helyi `command` indítást fogad el. Egy `"url"` mezőt kihagy, és ezt írja: not valid MCP server configurations and were skipped.
 
 ### Claude Desktop
 
 1. **Settings**, **Connectors**, **Add custom connector**.
 2. Név: **Fejlett MCP Szerver**.
 3. MCP server URL: `https://<A_CLOUD_RUN_CIMED>/mcp`.
-4. A szerver nyilvános, OAuth nincs. A varázslóban a hitelesítés nélküli lehetőséget válaszd.
-5. Mentsd. A **Connections** listában a **Fejlett MCP Szerver** szerepel, rajta az **Összeadás**, az **Úti cél** és az `utazas://adatok`.
+4. A szerver nyilvános, OAuth nincs. A varázslóban a **No sign-in** lehetőséget válaszd. Request header nem kell.
+5. **Connect**.
+6. A **Connections** listában a **Fejlett MCP Szerver** szerepel, rajta az **Összeadás**, az **Úti cél** és az `utazas://adatok`.
 
 ### Cursor
 
