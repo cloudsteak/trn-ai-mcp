@@ -149,6 +149,8 @@ async def test_utazas_prompt(client: Client) -> None:
     assert "Ide utazom: Cancun, Mexikó. Viszek 1000000 HUF összeget." in text
     assert "uticel" in text
     assert "penzvaltas" in text
+    assert "(uticel, Fejlett MCP Szerver)" in text
+    assert "zárójelben" in text
     assert "qr_kod" not in text
     assert "weboldal" not in text
 

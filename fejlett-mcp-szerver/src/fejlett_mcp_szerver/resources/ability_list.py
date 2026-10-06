@@ -53,7 +53,7 @@ def _section(title: str, lines: list[str]) -> str:
 
 
 def register(mcp: MCPServer) -> None:
-    @mcp.resource("training://ability-list")
+    @mcp.resource("training://ability-list", title="Képesség lista (resource)")
     def ability_list() -> str:
         """Toolok, resource-ok, promptok és külső toolok, csoportonként."""
         return "\n\n".join(

@@ -140,13 +140,13 @@ A `"mcpServers"` kulcsba ez kerül. A `<A_TE_HELYI_ELERESI_UTVONALAD>` a `trn-ai
 }
 ```
 
-A **Developer** listában a **Fejlett MCP Szerver** szerepel. A **Connections** sorában ott van az **Összeadás**, az **Úti cél**, az `utazas://adatok` és az **Utazás** prompt.
+A **Developer** listában a **Fejlett MCP Szerver** szerepel. A **Connections** sorában ott van az **Összeadás**, az **Úti cél**, az **Utazási adatok** erőforrás és az **Utazás** prompt.
 
 ### E2E teszt
 
 1. Nyiss egy chatet.
 2. **+**, **Connections**, **Add from Fejlett MCP Szerver**, **Utazás (prompt)**.
-3. Ugyanígy add hozzá az `utazas://adatok` resource-t.
+3. Ugyanígy add hozzá az **Utazási adatok** resource-t.
 4. A város Cancun, az ország Mexikó, az összeg 1000000, a pénznem HUF.
 5. Enter. A modell az `uticel` toolból veszi az időzónát és a pénznemet, majd az időt, az időjárást és az átváltást azokkal a toolokkal kéri.
 

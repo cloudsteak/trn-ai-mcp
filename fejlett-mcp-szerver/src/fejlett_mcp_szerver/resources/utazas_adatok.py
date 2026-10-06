@@ -6,7 +6,7 @@ from mcp.server.mcpserver import MCPServer
 
 
 def register(mcp: MCPServer) -> None:
-    @mcp.resource("utazas://adatok")
+    @mcp.resource("utazas://adatok", title="Utazási adatok (resource)")
     def utazas_adatok() -> str:
         """Járat, szállás, foglalás és összeg. Az indulás és az érkezés holnap van."""
         return (
