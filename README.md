@@ -16,7 +16,7 @@ Ez a projekt egy teljes, működő példa az első MCP szerver létrehozására 
 
 ## Fejlett MCP szerver
 
-A következő lépés az első szerver után. Ugyanaz a `src` elrendezés és a Python 3.13, de a toolok, resource-ok és promptok külön fájlban vannak, és a szerver külső MCP-ket is csatol. Részletek a [README](fejlett-mcp-szerver/README.md) fájlban.
+A következő lépés az első szerver után. A szerver a Cloud Runon fut, a kliens a `/mcp` címre csatlakozik. Részletek a [README](fejlett-mcp-szerver/README.md) fájlban.
 
 ## Előfeltételek
 
