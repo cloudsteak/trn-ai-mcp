@@ -287,6 +287,7 @@ async def _connect_external(
     server: MCPServer,
     spec: ExternalSpec,
     clients: dict[str, Client],
+    opened: list[Client],
 ) -> Client | None:
     client = Client(_client_target(spec))
     try:
@@ -294,6 +295,7 @@ async def _connect_external(
             await client.__aenter__()
             await mount_client_tools(server, client, spec.name, spec.rename, spec.only)
             clients[spec.name] = client
+            opened.append(client)
             return client
     except TimeoutError:
         logger.warning(
@@ -321,28 +323,27 @@ async def _connect_all(
     clients: dict[str, Client],
     opened: list[Client],
 ) -> None:
-    # A session előbb olvassa az initialize-t, mint hogy az npx elindul.
-    await asyncio.sleep(0)
-    results = await asyncio.gather(
-        *(_connect_external(server, spec, clients) for spec in load_externals())
+    await asyncio.gather(
+        *(
+            _connect_external(server, spec, clients, opened)
+            for spec in load_externals()
+        )
     )
-    opened.extend(client for client in results if client is not None)
     if opened:
         await server._subscriptions.publish(ToolsListChanged())
 
 
 @asynccontextmanager
 async def external_lifespan(server: MCPServer) -> AsyncIterator[dict[str, Client]]:
-    # A lifespan közben a kliens nem kap választ. A külső MCP-k ezért háttérben indulnak.
+    """A kliens csak akkor kap tool-listát, amikor a külső MCP-k már fent vannak.
+
+    A Claude Desktop a kapcsolat után azonnal elkéri a listát, és nem kéri újra.
+    Ha a külső toolok később kerülnének fel, a chat nem látná őket.
+    """
     clients: dict[str, Client] = {}
     opened: list[Client] = []
-    task = asyncio.create_task(_connect_all(server, clients, opened))
     try:
+        await _connect_all(server, clients, opened)
         yield clients
     finally:
-        task.cancel()
-        try:
-            await task
-        except asyncio.CancelledError:
-            pass
         await asyncio.gather(*(_close_client(client) for client in opened))

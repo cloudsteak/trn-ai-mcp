@@ -1,3 +1,4 @@
+import asyncio
 import time
 
 import pytest
@@ -73,14 +74,47 @@ async def test_mount_only_selected_tools() -> None:
 
 
 @pytest.mark.anyio
-async def test_hung_external_does_not_block_startup(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setattr("fejlett_mcp_szerver.externals._EXTERNAL_TIMEOUT_S", 30)
+async def test_externals_are_mounted_before_the_server_serves(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(
+        "fejlett_mcp_szerver.externals.load_externals",
+        lambda: [ExternalSpec(name="github", url="https://example.invalid/mcp")],
+    )
+
+    async def connect(server: MCPServer, spec: ExternalSpec, clients: dict, opened: list) -> str:
+        await asyncio.sleep(0.2)
+
+        @server.tool(name="github_profil")
+        def github_profil() -> str:
+            """GitHub profil."""
+            return "ok"
+
+        clients[spec.name] = "ready"
+        return "ready"
+
+    monkeypatch.setattr("fejlett_mcp_szerver.externals._connect_external", connect)
+    host = MCPServer("host")
+    started = time.perf_counter()
+    async with external_lifespan(host) as clients:
+        elapsed = time.perf_counter() - started
+        assert elapsed >= 0.2
+        assert clients == {"github": "ready"}
+        assert {tool.name for tool in host._tool_manager.list_tools()} == {"github_profil"}
+
+
+@pytest.mark.anyio
+async def test_hung_external_is_skipped_before_the_server_serves(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr("fejlett_mcp_szerver.externals._EXTERNAL_TIMEOUT_S", 0.4)
     monkeypatch.setattr(
         "fejlett_mcp_szerver.externals.load_externals",
         lambda: [ExternalSpec(name="slow", command="sleep", args=("30",))],
     )
     started = time.perf_counter()
     async with external_lifespan(MCPServer("host")) as clients:
-        assert time.perf_counter() - started < 1
+        elapsed = time.perf_counter() - started
+        assert elapsed >= 0.4
+        assert elapsed < 5
         assert clients == {}
-    assert time.perf_counter() - started < 8
