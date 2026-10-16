@@ -295,7 +295,7 @@ Amikor a fájl nyitva van egy szerkesztőben keress rá a `"mcpServers"` kulcsra
         "src/elso_mcp_szerverem/server.py"
       ]
     }
-  }
+  },
 ```
 
 3. A **<A_TE_HELYI_ELERESI_UTVONALAD>** helyére írd be a saját helyi elérési útvonaladat, ahol a `trn-ai-mcp/elso-mcp-szerverem` mappa található.
