@@ -159,7 +159,7 @@ A `"mcpServers"` kulcsba ez kerül. A `<A_TE_HELYI_ELERESI_UTVONALAD>` a `trn-ai
       "src/fejlett_mcp_szerver/server.py"
     ]
   }
-}
+},
 ```
 
 A **Developer** listában a **Fejlett MCP Szerver** szerepel. A **Connections** sorában ott van az **Összeadás**, az **Úti cél**, az **Utazási adatok** erőforrás és az **Utazás** prompt.
