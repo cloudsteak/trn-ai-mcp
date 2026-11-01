@@ -36,6 +36,7 @@ mcp = MCPServer(
         "QR-kód: qr_kod. "
         "Két időpont között eltelt idő: idokulonbseg. "
         "Jelszó: jelszo. "
+        "GitHub Action létezés, legfrissebb stabil verzió, frissítés, SHA: github_action. "
         "GitHub felhasználó: github_profil. Repók: repo_kereses. "
         "Fájl egy repóban: fajl_tartalom. "
         "Nyitott issue-k egy repóban: issue_lista. "

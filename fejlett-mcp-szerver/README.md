@@ -78,6 +78,7 @@ fejlett-mcp-szerver/
 | `idokulonbseg` | saját tool, két időpont különbsége órában és percben; a sorrend mindegy |
 | `jelszo` | saját tool, véletlen jelszó, hossz 8–128 (alap: 16) |
 | `uticel` | saját tool, rögzített városlista: időzóna és pénznem |
+| `github_action` | saját tool, GitHub Action létezése, legfrissebb stabil verziója és a commit SHA; verzió vagy SHA alapján frissítési javaslat |
 | `utazas_adatok` | resource, `utazas://adatok` |
 | `ability_list` | resource, `training://ability-list` |
 | Oktató (prompt) | hangnem, csak Cloud és AI kérdés |
@@ -92,6 +93,8 @@ fejlett-mcp-szerver/
 Az `uticel` ezeket a városokat ismeri: Cancun, Budapest, Bécs, Prága, London, Párizs, Róma, Barcelona, New York, Tokió, Dubai. Az ékezet és a kis-nagybetű mindegy. Ismeretlen városnál megmondja, hogy nincs adat. Alap: Cancun, Mexikó.
 
 A `qr_kod` a PNG-t a Letöltések mappába menti (`~/Downloads`). A `QR_OUTPUT_DIR` másik mappát ad meg.
+
+A `github_action` a GitHub API-ról nézi meg az actiont (`owner/repo`, `owner/repo/útvonal`, vagy egy `uses:` sor). Megmondja, hogy létezik-e. A legfrissebb stabil a legmagasabb kiadás, ami nem draft és nem előzetes, és a címkéjén ott az `action.yml`. A válasz a pontos verzió (például `v7.0.1`), a főverzió címke (`v7`), ha az ugyanarra a commitra mutat, és a commit SHA. A `pin` sor így másolható a workflow-ba. Ha verziót vagy SHA-t is adsz, megmondja, mire érdemes frissíteni, és a kettőt oda-vissza feloldja. Ugyanazon főverzión belül a legújabb javítást külön kiírja. Publikus action token nélkül is megy.
 
 Az Utazás prompt először az `uticel` toolt hívatja, majd az időzónával és a pénznemmel az `aktualis_ido`, az `elorejelzes` és a `penzvaltas` toolt.
 
@@ -133,7 +136,7 @@ cp .env.example .env
 
 | Változó | Mire kell |
 | --- | --- |
-| `GITHUB_PERSONAL_ACCESS_TOKEN` | A fent létrehozott GitHub token. |
+| `GITHUB_PERSONAL_ACCESS_TOKEN` | A GitHub MCP tokenje. A `github_action` is ezt használja, ha meg van adva; publikus actionnél token nélkül is megy. |
 | `QR_OUTPUT_DIR` | A QR PNG mappája. Üresen a Letöltések. |
 | `MCP_EXTERNALS` | Külső MCP-k JSON-ja, vagy `off`. |
 | `MCP_TRANSPORT` | `stdio` (alap) vagy `streamable-http`. |
@@ -351,6 +354,7 @@ Ha jóváhagyást kér, **Allow**. Az **Összeadás** `42`-t ad.
 - Resource `utazas://adatok`: foglalás DTL250113.
 - „Ki vagyok a GitHubon?”
 - „Keress Python MCP repo-kat.”
+- „Az actions/checkout actionből mi a legfrissebb stabil verzió?” A **GitHub Action** a pontos verziót, a főverziót és a commit SHA-t adja.
 
 ## Törlés
 
