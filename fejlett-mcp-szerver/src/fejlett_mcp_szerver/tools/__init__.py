@@ -9,6 +9,7 @@ from mcp.server.mcpserver import MCPServer
 
 from fejlett_mcp_szerver.tools import (
     aktualis_ido,
+    github_action,
     idokulonbseg,
     jelszo,
     osszead,
@@ -25,6 +26,7 @@ _TOOLS = (
     idokulonbseg,
     jelszo,
     uticel,
+    github_action,
 )
 
 

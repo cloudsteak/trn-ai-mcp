@@ -188,6 +188,39 @@ async def test_holnapi_idojaras_prompt(client: Client) -> None:
 
 
 @pytest.mark.anyio
+async def test_github_action(client: Client, monkeypatch: pytest.MonkeyPatch) -> None:
+    sha = "3d3c42e5aac5ba805825da76410c181273ba90b1"
+
+    class Fake:
+        def get(self, path: str, query: dict | None = None) -> tuple[int, object]:
+            page = (query or {}).get("page", "1")
+            if path.endswith("/tags"):
+                if page != "1":
+                    return 200, []
+                return 200, [
+                    {"name": "v7.0.1", "commit": {"sha": sha}},
+                    {"name": "v7", "commit": {"sha": sha}},
+                ]
+            if path.endswith("/releases"):
+                if page != "1":
+                    return 200, []
+                return 200, [{"tag_name": "v7.0.1", "prerelease": False, "draft": False}]
+            if "/contents/" in path:
+                return 200, {"type": "file"}
+            return 200, {"default_branch": "main"}
+
+    monkeypatch.setattr(
+        "fejlett_mcp_szerver.tools.github_action.GitHubClient.from_env",
+        classmethod(lambda cls: Fake()),
+    )
+    result = await client.call_tool("github_action", {"action": "actions/checkout"})
+    text = result.structured_content["result"]
+    assert "létezik: igen" in text
+    assert "legfrissebb stabil: v7.0.1" in text
+    assert f"sha: {sha}" in text
+
+
+@pytest.mark.anyio
 async def test_lists_expected_tools(client: Client) -> None:
     listed = await client.list_tools()
     names = {tool.name for tool in listed.tools}
@@ -199,4 +232,5 @@ async def test_lists_expected_tools(client: Client) -> None:
         "idokulonbseg",
         "jelszo",
         "uticel",
+        "github_action",
     }
